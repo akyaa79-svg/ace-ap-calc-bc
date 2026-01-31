@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import Math from './components/Math';
+import MathDisplay from './components/MathDisplay';
 import { units, getRandomQuestion, getQuestionsByUnit } from './data/questions';
 import './App.css';
 
@@ -60,7 +60,8 @@ function App() {
   };
 
   const loadNewQuestion = (unitId, excludeIds) => {
-    const q = getRandomQuestion(unitId, excludeIds, Math.round(difficulty));
+    const roundedDifficulty = difficulty < 1.5 ? 1 : difficulty < 2.5 ? 2 : 3;
+    const q = getRandomQuestion(unitId, excludeIds, roundedDifficulty);
     if (q) {
       setCurrentQuestion(q);
       setSelectedAnswer(null);
@@ -119,9 +120,9 @@ function App() {
 
     // Adaptive difficulty
     if (isCorrect && difficulty < 3) {
-      setDifficulty(d => Math.min(3, d + 0.3));
+      setDifficulty(d => d + 0.3 > 3 ? 3 : d + 0.3);
     } else if (!isCorrect && difficulty > 1) {
-      setDifficulty(d => Math.max(1, d - 0.3));
+      setDifficulty(d => d - 0.3 < 1 ? 1 : d - 0.3);
     }
   };
 
@@ -148,11 +149,11 @@ function App() {
 
   // Render helpers
   const renderQuestion = (text) => {
-    return <Math>{text}</Math>;
+    return <MathDisplay>{text}</MathDisplay>;
   };
 
   const renderOption = (text) => {
-    return <Math>{text}</Math>;
+    return <MathDisplay>{text}</MathDisplay>;
   };
 
   // Views
